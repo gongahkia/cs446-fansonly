@@ -1,0 +1,4 @@
+node_modules
+.next
+var
+npm-debug.log*

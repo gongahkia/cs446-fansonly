@@ -1,0 +1,32 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - navigation [ref=e3]:
+      - link "Home" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - link "New Site" [ref=e5] [cursor=pointer]:
+        - /url: /new-site
+      - link "Backup" [ref=e6] [cursor=pointer]:
+        - /url: /backup
+      - link "Admin" [ref=e7] [cursor=pointer]:
+        - /url: /admin
+      - link "Webhook Docs" [ref=e8] [cursor=pointer]:
+        - /url: /docs/webhook
+      - link "Webhook Tester" [ref=e9] [cursor=pointer]:
+        - /url: /tools/webhook-test
+      - link "Legacy Preview" [ref=e10] [cursor=pointer]:
+        - /url: /legacy-preview
+      - link "Login" [ref=e11] [cursor=pointer]:
+        - /url: /account/login
+    - generic [ref=e12]:
+      - paragraph [ref=e13]: Dealer preview endpoint
+      - heading "Legacy App Router action preview" [level=1] [ref=e14]
+      - paragraph [ref=e15]: This page mirrors an old dealer-side preview flow still enabled during the migration. Operations uses it to test action payloads against the current site.
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - text: Dealer slug
+          - textbox "Dealer slug" [ref=e18]: legacy-wholesale
+        - generic [ref=e19]:
+          - text: Action payload
+          - textbox "Action payload" [ref=e20]: "{\"mode\":\"preview\",\"target\":\"/dealers/import\"}"
+        - button "Send preview payload" [ref=e21] [cursor=pointer]
+  - alert [ref=e22]

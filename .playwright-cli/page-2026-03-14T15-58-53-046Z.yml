@@ -1,0 +1,30 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e22]
+  - main [ref=e23]:
+    - navigation [ref=e24]:
+      - link "Home" [ref=e25] [cursor=pointer]:
+        - /url: /
+      - link "New Site" [ref=e26] [cursor=pointer]:
+        - /url: /new-site
+      - link "Backup" [ref=e27] [cursor=pointer]:
+        - /url: /backup
+      - link "Admin" [ref=e28] [cursor=pointer]:
+        - /url: /admin
+      - link "Webhook Docs" [ref=e29] [cursor=pointer]:
+        - /url: /docs/webhook
+      - link "Webhook Tester" [ref=e30] [cursor=pointer]:
+        - /url: /tools/webhook-test
+      - link "Legacy Preview" [ref=e31] [cursor=pointer]:
+        - /url: /legacy-preview
+      - link "Login" [ref=e32] [cursor=pointer]:
+        - /url: /account/login
+    - generic [ref=e33]:
+      - paragraph [ref=e34]: Operator console
+      - heading "Interactive session" [level=1] [ref=e35]
+      - generic [ref=e36]:
+        - generic [ref=e37]:
+          - generic [ref=e38]: Connected to Windward training shell as www-data.
+          - generic [ref=e39]: This shell is simulated. Use it to inspect the challenge environment.
+        - generic [ref=e40]:
+          - generic [ref=e41]: www-data@windward:/var/www/fan-store$
+          - textbox "www-data@windward:/var/www/fan-store$" [ref=e42]

@@ -1,0 +1,59 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - navigation [ref=e3]:
+      - link "Home" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - link "New Site" [ref=e5] [cursor=pointer]:
+        - /url: /new-site
+      - link "Backup" [ref=e6] [cursor=pointer]:
+        - /url: /backup
+      - link "Admin" [ref=e7] [cursor=pointer]:
+        - /url: /admin
+      - link "Webhook Docs" [ref=e8] [cursor=pointer]:
+        - /url: /docs/webhook
+      - link "Webhook Tester" [ref=e9] [cursor=pointer]:
+        - /url: /tools/webhook-test
+      - link "Legacy Preview" [ref=e10] [cursor=pointer]:
+        - /url: /legacy-preview
+      - link "Login" [ref=e11] [cursor=pointer]:
+        - /url: /account/login
+    - generic [ref=e12]:
+      - strong [ref=e13]: Legacy storefront notice.
+      - text: This current site is scheduled for retirement because it still runs on react@19.1.0 and next@15.1.0. Please move to the
+      - link "new site" [ref=e14] [cursor=pointer]:
+        - /url: /new-site
+      - text: as soon as possible.
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - paragraph [ref=e17]: Windward Fans
+        - heading "Cooling every floor, warehouse, and workshop." [level=1] [ref=e18]
+        - paragraph [ref=e19]: Browse ceiling fans, standing fans, industrial blowers, and smart circulation kits still used by our wholesale partners during the migration period.
+        - generic [ref=e20]:
+          - link "Open legacy action preview" [ref=e21] [cursor=pointer]:
+            - /url: /legacy-preview
+          - link "Try webhook diagnostics" [ref=e22] [cursor=pointer]:
+            - /url: /tools/webhook-test
+      - generic [ref=e23]:
+        - heading "Operations notes" [level=2] [ref=e24]
+        - paragraph [ref=e25]: The legacy system still powers dealer exports, backup indexing, and analyst workflows while the replacement portal is under construction.
+        - list [ref=e26]:
+          - listitem [ref=e27]: Bulk customer exports remain on the legacy host.
+          - listitem [ref=e28]: Webhook verification remains enabled for analysts.
+          - listitem [ref=e29]: Some internal routes are blocked from indexing, but still routable.
+    - generic [ref=e30]:
+      - article [ref=e31]:
+        - heading "Dealer catalog sync" [level=3] [ref=e32]
+        - paragraph [ref=e33]: Preview old App Router actions still used by select B2B dealers during migration.
+        - link "Open preview" [ref=e34] [cursor=pointer]:
+          - /url: /legacy-preview
+      - article [ref=e35]:
+        - heading "Webhook help" [level=3] [ref=e36]
+        - paragraph [ref=e37]: Test where sample events land before an analyst account goes live.
+        - link "Read docs" [ref=e38] [cursor=pointer]:
+          - /url: /docs/webhook
+      - article [ref=e39]:
+        - heading "Analyst onboarding" [level=3] [ref=e40]
+        - paragraph [ref=e41]: Redeem an internal bootstrap token and create a review account.
+        - link "Create analyst account" [ref=e42] [cursor=pointer]:
+          - /url: /account/analyst-signup
+  - alert [ref=e43]

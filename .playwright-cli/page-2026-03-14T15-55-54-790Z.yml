@@ -1,0 +1,31 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e43]
+  - main [ref=e44]:
+    - navigation [ref=e45]:
+      - link "Home" [ref=e46] [cursor=pointer]:
+        - /url: /
+      - link "New Site" [ref=e47] [cursor=pointer]:
+        - /url: /new-site
+      - link "Backup" [ref=e48] [cursor=pointer]:
+        - /url: /backup
+      - link "Admin" [ref=e49] [cursor=pointer]:
+        - /url: /admin
+      - link "Webhook Docs" [ref=e50] [cursor=pointer]:
+        - /url: /docs/webhook
+      - link "Webhook Tester" [ref=e51] [cursor=pointer]:
+        - /url: /tools/webhook-test
+      - link "Legacy Preview" [ref=e52] [cursor=pointer]:
+        - /url: /legacy-preview
+      - link "Login" [ref=e53] [cursor=pointer]:
+        - /url: /account/login
+    - generic [ref=e54]:
+      - paragraph [ref=e55]: Connectivity tool
+      - heading "Webhook testing" [level=1] [ref=e56]
+      - generic [ref=e57]:
+        - generic [ref=e58]:
+          - text: Target URL
+          - textbox "Target URL" [ref=e59]: http://127.0.0.1:9000/bootstrap
+        - button "Send sample event" [ref=e60] [cursor=pointer]
+      - generic [ref=e61]:
+        - heading "Verifier response" [level=3] [ref=e62]
+        - generic [ref=e63]: "{ \"adminToken\": \"WW-ADMIN-TOKEN-PLACEHOLDER\", \"analystSignup\": \"/account/analyst-signup\", \"note\": \"Training-only bootstrap token service.\" }"
