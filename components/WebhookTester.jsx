@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 export default function WebhookTester() {
-  const [targetUrl, setTargetUrl] = useState("http://127.0.0.1:9000/bootstrap");
+  const [targetUrl, setTargetUrl] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -26,7 +26,7 @@ export default function WebhookTester() {
       <form onSubmit={handleSubmit}>
         <label>
           Target URL
-          <input value={targetUrl} onChange={(event) => setTargetUrl(event.target.value)} />
+          <input value={targetUrl} onChange={(event) => setTargetUrl(event.target.value)} placeholder="https://your-server.example.com/webhook" />
         </label>
         <button type="submit" disabled={loading}>{loading ? "Testing..." : "Send sample event"}</button>
       </form>

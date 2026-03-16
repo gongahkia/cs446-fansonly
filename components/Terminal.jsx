@@ -10,6 +10,7 @@ export default function Terminal({ session, actor, cwd, prompt }) {
   const [command, setCommand] = useState("");
   const [meta, setMeta] = useState({ actor, cwd, prompt });
   const outputRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     outputRef.current?.scrollTo({ top: outputRef.current.scrollHeight });
@@ -46,17 +47,20 @@ export default function Terminal({ session, actor, cwd, prompt }) {
   }
 
   return (
-    <div className="terminal">
+    <div className="terminal terminal-fullscreen" onClick={() => inputRef.current?.focus()}>
       <div className="terminal-output shell-history" ref={outputRef}>
         {history.map((entry, index) => (
           <pre key={`${entry.type}-${index}`}>{entry.text}</pre>
         ))}
       </div>
-      <form onSubmit={handleSubmit} style={{ marginTop: "1rem" }}>
-        <label className="mono" htmlFor="command-input">{meta.prompt}</label>
+      <form onSubmit={handleSubmit} className="terminal-input-row">
+        <span className="mono terminal-prompt">{meta.prompt}</span>
         <input
+          ref={inputRef}
           id="command-input"
+          className="terminal-input"
           autoComplete="off"
+          autoFocus
           spellCheck="false"
           value={command}
           onChange={(event) => setCommand(event.target.value)}

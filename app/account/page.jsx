@@ -16,7 +16,7 @@ export default async function AccountPage() {
           <>
             <p><strong>Email:</strong> {user.email}</p>
             <p><strong>Role:</strong> {user.role}</p>
-            <p><strong>Session token:</strong> <span className="mono">{sessionToken}</span></p>
+            <p style={{ wordBreak: "break-all" }}><strong>Session token:</strong> <span className="mono">{sessionToken}</span></p>
             <p className="muted">
               Analysts can review webhook data. Administrators can manage catalog and analyst roles.
             </p>

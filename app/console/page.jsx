@@ -1,4 +1,3 @@
-import SiteFrame from "@/components/SiteFrame";
 import Terminal from "@/components/Terminal";
 import { getShellSession } from "@/lib/challenge-state";
 
@@ -7,22 +6,25 @@ export default async function ConsolePage({ searchParams }) {
   const session = params.session || "";
   const shellSession = getShellSession(session);
 
-  return (
-    <SiteFrame>
-      <div className="card">
-        <p className="muted">Operator console</p>
-        <h1>Interactive session</h1>
-        {!shellSession ? (
-          <p>Unknown or expired session token.</p>
-        ) : (
-          <Terminal
-            session={session}
-            actor={shellSession.actor}
-            cwd={shellSession.actor === "www-data" ? "/var/www/fan-store" : shellSession.actor === "devops" ? "/home/devops" : "/root"}
-            prompt={`${shellSession.actor}@fansonly:${shellSession.actor === "www-data" ? "/var/www/fan-store" : shellSession.actor === "devops" ? "/home/devops" : "/root"}$`}
-          />
-        )}
+  if (!shellSession) {
+    return (
+      <div className="fullscreen-terminal">
+        <pre className="mono" style={{ color: "#c8ffdd", padding: "1rem" }}>Unknown or expired session token.</pre>
       </div>
-    </SiteFrame>
+    );
+  }
+
+  const actor = shellSession.actor;
+  const cwd = actor === "www-data" ? "/var/www/fan-store" : actor === "devops" ? "/home/devops" : "/root";
+
+  return (
+    <div className="fullscreen-terminal">
+      <Terminal
+        session={session}
+        actor={actor}
+        cwd={cwd}
+        prompt={`${actor}@fansonly:${cwd}$`}
+      />
+    </div>
   );
 }
