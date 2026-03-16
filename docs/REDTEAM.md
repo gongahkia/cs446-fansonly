@@ -97,23 +97,42 @@ Then click `Send preview payload`.
 
 Expected result:
 
-- you are redirected to `/console?...`
-- this is your simulated `www-data` shell
+- you are redirected to a fullscreen terminal at `/console?...`
+- this is your simulated `www-data` shell (no nav bar, just a terminal)
 
 ### Commands to run in the console
+
+The console is now fullscreen (no site chrome). Type commands directly.
 
 ```bash
 whoami
 pwd
-cat /var/www/fan-store/.env
+ls
 ```
+
+The `.env` is no longer at the project root. You need to find it by exploring the directory tree:
+
+```bash
+ls deploy
+ls deploy/config
+cat deploy/config/.env.production
+```
+
+The breadcrumb is in `deploy/docker-compose.yml`:
+
+```bash
+cat deploy/docker-compose.yml
+```
+
+which contains `env_file: ./config/.env.production`.
 
 Expected result:
 
 - `whoami` returns `www-data`
-- `.env` reveals:
+- `.env.production` reveals:
   - `DEVOPS_SSH_PASSWORD=123456`
   - `ADMIN_TOKEN=...`
+  - `APP_JWT_SECRET=fansonly-dev-secret`
 
 ### Pivot from www-data to devops
 
@@ -148,13 +167,15 @@ http://<vm_ip>/tools/webhook-test
 
 ### URL to test
 
-Leave the default value:
+The tester input is now blank (no default URL). The webhook docs page at `/docs/webhook` lists several decoy event types and path hints to mislead, but the key hint is in the docs text: "only loopback targets receive a live fetch."
+
+Students must discover the SSRF target. The intended URL:
 
 ```text
 http://127.0.0.1:9000/bootstrap
 ```
 
-Click `Send sample event`.
+Paste it into the `Target URL` field and click `Send sample event`.
 
 Expected result:
 
@@ -267,8 +288,8 @@ Expected result:
 
 ### Fastest app-admin narrative
 
-1. `/tools/webhook-test`
-2. fetch `http://127.0.0.1:9000/bootstrap`
+1. `/tools/webhook-test` (no default URL — enter `http://127.0.0.1:9000/bootstrap`)
+2. read the leaked `adminToken` from the response
 3. create analyst account
 4. go to `/account` and copy session token
 5. trigger `/legacy-preview` to get `www-data`
