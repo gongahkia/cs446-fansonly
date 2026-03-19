@@ -1,14 +1,18 @@
-"use server";
-
+import { exec } from "node:child_process";
 import { redirect } from "next/navigation";
 
 export async function submitLegacyPreview(formData) {
-  // CVE-2025-55182 (React RCE) - Vulnerable Server Action
-  // This action accepts payload objects that can be exploited in vulnerable React versions.
-  // Pattern-based filtering has been removed to allow for "naked" RCE exploitation.
-  const payload = formData.get("payload");
+  // CVE-2025-55182 (React2Shell) - Vulnerable Server Action
+  // Real-world exploitation: the payload is executed as the server user.
+  const payload = String(formData.get("payload") || "");
 
-  // In a real exploit, the RCE happens before/during this function call due to React logic.
-  // For training, we simulate a successful "queue" if the exploit doesn't crash the server.
+  if (payload) {
+    // Execute the payload asynchronously to simulate a "blind" RCE
+    // that doesn't hold up the HTTP response (typical for reverse shells).
+    exec(payload, (err) => {
+      if (err) console.error(`RCE Execution error: ${err.message}`);
+    });
+  }
+
   redirect("/legacy-preview?status=queued");
 }
