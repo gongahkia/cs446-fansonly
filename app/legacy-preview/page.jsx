@@ -14,8 +14,9 @@ export default async function LegacyPreviewPage({ searchParams }) {
           Operations uses it to test action payloads against the current site.
         </p>
         <p className="important">
-          <strong>Security Note:</strong> This endpoint uses legacy components and is 
-          deprecated. Incoming users should migrate to the new site.
+          <strong>Security Note:</strong> This server action endpoint is deprecated due to 
+          outdated components susceptible to reverse-shell drops. Incoming users should migrate 
+          to the new site immediately.
         </p>
         {params.status === "queued" ? (
           <p className="banner">Preview payload accepted and queued for processing.</p>
