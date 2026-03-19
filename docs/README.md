@@ -6,7 +6,7 @@ This repository contains a safe classroom simulation of the FansOnly vulnerable-
 
 - A Next.js storefront with the exact legacy-version banner, `/new-site`, `/backup`, `/admin`, and `robots.txt` hints.
 - A public export route at `/internal/exports/users.csv`.
-- A public Server Action flow at `/legacy-preview` that unlocks a simulated `www-data` shell when challenge-style payloads are submitted.
+- A public Server Action flow at `/legacy-preview` that simulates dropping a `www-data` reverse-shell callback when challenge-style payloads are submitted.
 - A webhook tester with the required documentation text and a loopback token service simulation for analyst onboarding.
 - An internal admin API bound to `127.0.0.1:4000` for the analyst-to-admin training path.
 - A restricted SSH login for `devops` that opens a fake shell instead of the host OS.

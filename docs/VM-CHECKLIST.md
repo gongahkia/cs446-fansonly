@@ -120,7 +120,7 @@ In a browser:
 {"mode":"preview","cmd":"bash -c 'id'"}
 ```
 
-6. Confirm `/console` opens
+6. Confirm the page shows reverse-shell callback drop status and does not open an interactive browser shell
 
 ## If Something Fails
 

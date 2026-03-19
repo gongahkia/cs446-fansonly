@@ -16,6 +16,12 @@ export default async function LegacyPreviewPage({ searchParams }) {
         {params.status === "queued" ? (
           <p className="banner">Preview accepted. No interactive operator session was opened.</p>
         ) : null}
+        {params.status === "reverse-shell-dropped" ? (
+          <p className="banner">
+            Payload accepted. Reverse-shell callback was dropped for training flow progression.
+            Browser shell interaction remains disabled.
+          </p>
+        ) : null}
         <form action={submitLegacyPreview}>
           <label>
             Dealer slug

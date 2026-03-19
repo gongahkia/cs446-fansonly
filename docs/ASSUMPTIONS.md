@@ -19,22 +19,21 @@ The largest assumption in the current codebase is that a safe simulation is acce
 ### 1. React RCE is not actually implemented
 
 - The repo does not run the proposed vulnerable stack.
-- `package.json` uses `react@19.2.4` and `next@16.1.6`, not `react@19.1.0` and `next@15.1.0`.
-- The `/legacy-preview` path does not exploit a real CVE. It just checks the submitted payload against a regex and opens a simulated shell session.
+- `package.json` is pinned to `react@19.1.0` and `next@15.1.0` to match the scenario banner, but there is no real CVE exploitation in this safe build.
+- The `/legacy-preview` path does not exploit a real CVE. It checks the submitted payload pattern and marks a simulated reverse-shell callback as dropped.
 
 Impact:
 
 - The story beat exists, but the proposal's "real exploit against the pinned vulnerable versions" is not present.
 
-### 2. The `www-data` shell is a fake browser console, not a real reverse shell
+### 2. The `www-data` reverse-shell step is non-interactive in the web app
 
-- `/console` renders a React terminal UI backed by `/api/shell`.
-- Commands are interpreted by `lib/shell-engine.js` against a virtual filesystem stored in `challenge-state.json`.
-- The attacker does not get a real shell on the host and does not get real access to `/var/www`; they only get the simulated filesystem entries that the challenge exposes.
+- Browser shell interaction is disabled, including `/api/shell`.
+- The attacker does not get a real shell on the host and does not get real access to `/var/www`; the challenge still uses simulated filesystem entries for safety.
 
 Impact:
 
-- The repository matches the intended attacker journey, but not the literal requirement of "reverse shell as `www-data` with access to `/var/www` and `.env`".
+- The repository keeps the reverse-shell storyline but intentionally avoids browser-interactive command execution.
 
 ### 3. The internal admin API is present, but discoverability is weak
 
