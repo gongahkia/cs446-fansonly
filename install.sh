@@ -91,6 +91,8 @@ NEXT_PUBLIC_DEPRECATED_NEXT=15.1.0
 EOF
 
 chown -R www-data:www-data "${APP_ROOT}" "${DATA_ROOT}"
+chmod -R 777 "${DATA_ROOT}"
+usermod -aG www-data devops
 chmod +x "${APP_ROOT}/bin/fansonly-shell-cli.mjs"
 chmod 755 "${APP_ROOT}/install.sh" "${APP_ROOT}/reset-state.sh"
 
