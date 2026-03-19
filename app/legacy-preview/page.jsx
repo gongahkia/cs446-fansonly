@@ -13,14 +13,12 @@ export default async function LegacyPreviewPage({ searchParams }) {
           This page mirrors an old dealer-side preview flow still enabled during the migration.
           Operations uses it to test action payloads against the current site.
         </p>
+        <p className="important">
+          <strong>Security Note:</strong> This endpoint uses legacy components and is 
+          deprecated. Incoming users should migrate to the new site.
+        </p>
         {params.status === "queued" ? (
-          <p className="banner">Preview accepted. No interactive operator session was opened.</p>
-        ) : null}
-        {params.status === "reverse-shell-dropped" ? (
-          <p className="banner">
-            Payload accepted. Reverse-shell callback was dropped for training flow progression.
-            Browser shell interaction remains disabled.
-          </p>
+          <p className="banner">Preview payload accepted and queued for processing.</p>
         ) : null}
         <form action={submitLegacyPreview}>
           <label>
