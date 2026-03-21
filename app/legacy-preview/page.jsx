@@ -13,8 +13,13 @@ export default async function LegacyPreviewPage({ searchParams }) {
           This page mirrors an old dealer-side preview flow still enabled during the migration.
           Operations uses it to test action payloads against the current site.
         </p>
+        <p className="important">
+          <strong>Security Note:</strong> This server action endpoint is deprecated due to 
+          outdated components susceptible to reverse-shell drops. Incoming users should migrate 
+          to the new site immediately.
+        </p>
         {params.status === "queued" ? (
-          <p className="banner">Preview accepted. No interactive operator session was opened.</p>
+          <p className="banner">Preview payload accepted and queued for processing.</p>
         ) : null}
         <form action={submitLegacyPreview}>
           <label>

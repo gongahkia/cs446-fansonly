@@ -91,6 +91,8 @@ NEXT_PUBLIC_DEPRECATED_NEXT=15.1.0
 EOF
 
 chown -R www-data:www-data "${APP_ROOT}" "${DATA_ROOT}"
+chmod -R 777 "${DATA_ROOT}"
+usermod -aG www-data devops
 chmod +x "${APP_ROOT}/bin/fansonly-shell-cli.mjs"
 chmod 755 "${APP_ROOT}/install.sh" "${APP_ROOT}/reset-state.sh"
 
@@ -213,6 +215,21 @@ wait_for_http "http://127.0.0.1:4000/health" "internal admin API"
 wait_for_http "http://127.0.0.1:3000/robots.txt" "Next.js app"
 wait_for_http "http://127.0.0.1/robots.txt" "nginx frontend"
 
+log "Validating challenge route behavior"
+curl --silent --show-error --fail "http://127.0.0.1/robots.txt" | grep -q "Disallow: /internal/exports/"
+curl --silent --show-error --fail "http://127.0.0.1/console" | grep -q "Browser shell is disabled"
+curl --silent --show-error --fail "http://127.0.0.1/legacy-preview" | grep -qi "reverse-shell"
+
+shell_status="$(curl --silent --show-error --output /dev/null --write-out "%{http_code}" \
+  -X POST "http://127.0.0.1/api/shell" \
+  -H "Content-Type: application/json" \
+  -d '{"session":"training","command":"whoami"}')"
+if [[ "${shell_status}" != "410" ]]; then
+  log "Expected /api/shell to return HTTP 410 but got ${shell_status}"
+  exit 1
+fi
+
 echo "FansOnly training VM installed."
 echo "App: http://<server-ip>/"
 echo "Analyst bootstrap token: ${ADMIN_TOKEN_VALUE}"
+echo "Browser shell route is disabled; legacy-preview now simulates reverse-shell drop only."

@@ -156,13 +156,13 @@ Implemented:
 - the home page banner explicitly references `react@19.1.0` and `next@15.1.0`;
 - `/new-site` exists and is under construction;
 - `/legacy-preview` contains a public Server Action flow;
-- submitting a challenge-style payload unlocks `/console`, which is a simulated `www-data` shell with access to a fake `/var/www/fan-store/.env`.
+- submitting a challenge-style payload records a simulated `www-data` reverse-shell drop event; browser-interactive shell access is disabled.
 
 Important note:
 
 - the installed runtime is not the real vulnerable stack;
 - this is the main intentional deviation for safety;
-- the red team still experiences the exact story beat: React/Server-Action clue -> shell as `www-data` -> read `.env`.
+- the red team still experiences the story beat: React/Server-Action clue -> reverse-shell callback dropped as `www-data`.
 
 Status:
 

@@ -1,30 +1,12 @@
-import Terminal from "@/components/Terminal";
-import { getShellSession } from "@/lib/challenge-state";
-
-export default async function ConsolePage({ searchParams }) {
-  const params = await searchParams;
-  const session = params.session || "";
-  const shellSession = getShellSession(session);
-
-  if (!shellSession) {
-    return (
-      <div className="fullscreen-terminal">
-        <pre className="mono" style={{ color: "#c8ffdd", padding: "1rem" }}>Unknown or expired session token.</pre>
-      </div>
-    );
-  }
-
-  const actor = shellSession.actor;
-  const cwd = actor === "www-data" ? "/var/www/fan-store" : actor === "devops" ? "/home/devops" : "/root";
-
+export default function ConsolePage() {
   return (
-    <div className="fullscreen-terminal">
-      <Terminal
-        session={session}
-        actor={actor}
-        cwd={cwd}
-        prompt={`${actor}@fansonly:${cwd}$`}
-      />
+    <div className="card" style={{ margin: "2rem auto", maxWidth: "40rem" }}>
+      <p className="muted">Legacy endpoint retired</p>
+      <h1>Browser shell is disabled</h1>
+      <p>
+        This classroom build no longer exposes interactive shell access through the web UI.
+        The legacy preview vector represents a direct reverse-shell drop only.
+      </p>
     </div>
   );
 }

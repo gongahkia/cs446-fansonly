@@ -15,7 +15,7 @@ http://<vm_ip>/
 You have three intended initial-access paths:
 
 1. CSV export leak -> `devops` SSH
-2. legacy React/Server Action clue -> `www-data` console
+2. legacy React/Server Action clue -> `www-data` reverse-shell drop event
 3. webhook SSRF clue -> analyst account
 
 You also have:
@@ -71,7 +71,7 @@ cat /etc/cron.d/fansonly-backup
 cat /usr/local/sbin/fansonly-maintenance.sh
 ```
 
-## Path 2: Simulated React RCE -> www-data shell
+## Path 2: Simulated React RCE -> reverse-shell drop
 
 ### Click path
 
@@ -97,46 +97,13 @@ Then click `Send preview payload`.
 
 Expected result:
 
-- you are redirected to a fullscreen terminal at `/console?...`
-- this is your simulated `www-data` shell (no nav bar, just a terminal)
+- a status banner confirms the reverse-shell callback was dropped for training progression
+- browser-interactive shell access is intentionally disabled
 
-### Commands to run in the console
+### Operator note
 
-The console is now fullscreen (no site chrome). Type commands directly.
-
-```bash
-whoami
-pwd
-ls
-```
-
-The `.env` is no longer at the project root. You need to find it by exploring the directory tree:
-
-```bash
-ls deploy
-ls deploy/config
-cat deploy/config/.env.production
-```
-
-The breadcrumb is in `deploy/docker-compose.yml`:
-
-```bash
-cat deploy/docker-compose.yml
-```
-
-which contains `env_file: ./config/.env.production`.
-
-Expected result:
-
-- `whoami` returns `www-data`
-- `.env.production` reveals:
-  - `DEVOPS_SSH_PASSWORD=123456`
-  - `ADMIN_TOKEN=...`
-  - `APP_JWT_SECRET=fansonly-dev-secret`
-
-### Pivot from www-data to devops
-
-Use the password from `.env`:
+The reverse-shell event models code execution as `www-data` outside the browser.
+Use the reused password from challenge materials to pivot into the `devops` SSH path:
 
 ```bash
 ssh devops@<vm_ip>
@@ -204,16 +171,18 @@ Copy the session token shown on the page. You will need it for the admin-promoti
 This path combines:
 
 - the analyst account from the webhook path
-- the `www-data` shell from the legacy-preview path
+- code execution context from the legacy-preview reverse-shell drop path
 
 ### Preparation
 
 1. Complete the webhook path and copy the session token from `/account`
-2. Complete the legacy-preview path and get the `www-data` console
+2. Complete the legacy-preview path to trigger the reverse-shell drop event
 
-### Command to run in the www-data console
+### Command to run from host context
 
 On a freshly reset VM, the analyst account you created is user ID `2`.
+
+Run this from any host-level context that can reach localhost services (for example, after `ssh devops@<vm_ip>`):
 
 Run:
 
@@ -292,8 +261,8 @@ Expected result:
 2. read the leaked `adminToken` from the response
 3. create analyst account
 4. go to `/account` and copy session token
-5. trigger `/legacy-preview` to get `www-data`
-6. call the localhost admin API from the web console
+5. trigger `/legacy-preview` to drop reverse-shell callback event
+6. call the localhost admin API from host context using the copied token
 
 ## If Something Looks Wrong
 
