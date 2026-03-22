@@ -234,6 +234,8 @@ Expected result:
 - `whoami` returns `root`
 - `cat /root/root.txt` returns the simulated root flag
 
+<img width="496" height="208" alt="image" src="https://github.com/user-attachments/assets/3f168a63-b6b9-40f8-9a4a-8ec5f15478fa" />
+
 ## Vertical Escalation 2: PATH hijack
 
 Start from the `devops` SSH shell.
@@ -251,6 +253,10 @@ Expected result:
 
 - `id` returns `uid=0(root)`
 - `cat /root/root.txt` returns the simulated root flag
+
+
+<img width="500" height="170" alt="image" src="https://github.com/user-attachments/assets/ea19ff82-abc8-44a2-bc4a-40eeba956db1" />
+
 
 ## Fastest End-To-End Paths
 
