@@ -87,7 +87,10 @@ Once you have an analyst account and a session token (found on the `/account` pa
 3. **Result**: Your account is promoted to **Admin**.
 
 ### Vertical: Escalating to Root
-From the `devops` SSH shell, there are two ways to get root:
+From the `devops` SSH shell, there are two ways to get root. 
+
+> [!IMPORTANT]
+> **Exploit Persistence**: In this training environment, once a session is escalated to `root`, it stays as root for that session. If you have already run an exploit once and wish to practice it again from a "non-root" state, you must ask the Blue Team to run `sudo bash reset-state.sh` on the VM.
 
 #### 1. Wildcard Injection (tar)
 The system runs a backup script using `tar *`.
