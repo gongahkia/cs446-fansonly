@@ -6,7 +6,10 @@ log() {
 }
 
 run_as_www_data() {
-  runuser -u www-data -- /bin/bash -lc "$1"
+  runuser -u www-data -- env \
+    HOME="${APP_ROOT}" \
+    NPM_CONFIG_CACHE="${APP_ROOT}/.npm-cache" \
+    /bin/bash -c "$1"
 }
 
 wait_for_http() {
@@ -104,6 +107,8 @@ chmod -R 777 "${DATA_ROOT}"
 usermod -aG www-data devops
 chmod +x "${APP_ROOT}/bin/fansonly-shell-cli.mjs"
 chmod 755 "${APP_ROOT}/reset-state.sh"
+mkdir -p "${APP_ROOT}/.npm-cache"
+chown -R www-data:www-data "${APP_ROOT}/.npm-cache"
 
 log "Installing application dependencies and building app"
 if [[ -f "${APP_ROOT}/package-lock.json" ]]; then
