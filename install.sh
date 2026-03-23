@@ -73,14 +73,14 @@ systemctl stop fansonly-app.service fansonly-admin-api.service fansonly-token.se
 
 mkdir -p "${APP_ROOT}" "${DATA_ROOT}"
 rsync -a --delete --delete-excluded \
-  --exclude .git \
-  --exclude .gitignore \
-  --exclude .playwright-cli \
-  --exclude docs \
-  --exclude install.sh \
-  --exclude node_modules \
-  --exclude .next \
-  --exclude var \
+  --exclude '/.git/' \
+  --exclude '/.gitignore' \
+  --exclude '/.playwright-cli/' \
+  --exclude '/docs/' \
+  --exclude '/install.sh' \
+  --exclude '/node_modules/' \
+  --exclude '/.next/' \
+  --exclude '/var/' \
   "${SCRIPT_DIR}/" "${APP_ROOT}/"
 
 id -u devops >/dev/null 2>&1 || useradd -m -s /bin/bash devops
@@ -226,6 +226,7 @@ wait_for_http "http://127.0.0.1/robots.txt" "nginx frontend"
 
 log "Validating challenge route behavior"
 curl --silent --show-error --fail "http://127.0.0.1/robots.txt" | grep -q "Disallow: /internal/exports/"
+curl --silent --show-error --fail "http://127.0.0.1/docs/webhook" | grep -qi "Webhook verification"
 curl --silent --show-error --fail "http://127.0.0.1/console" | grep -q "Browser shell is disabled"
 curl --silent --show-error --fail "http://127.0.0.1/legacy-preview" | grep -qi "reverse-shell"
 
