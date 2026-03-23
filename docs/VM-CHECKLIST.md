@@ -48,7 +48,9 @@ Expected:
 // TODO: remove debug exports at /internal/exports/users.csv
 ```
 
-- `users.csv` contains `devops` and password `123456`
+- `users.csv` contains `devops` and an MD5 password hash in the `password_md5` column
+- with the default install values, the hash is `e10adc3949ba59abbe56e057f20f883e`
+- the intended student solve is to crack that hash offline with `john` or `hashcat` using `rockyou.txt`, then SSH as `devops`
 
 ## 4. Confirm webhook/token path
 
@@ -88,6 +90,8 @@ Expected:
 
 - the prompt starts with `devops@fansonly:`
 - this is the restricted training shell, not a normal host shell
+
+If you are validating the intended student path for Vector 1, recover `123456` from the leaked MD5 hash in `users.csv` first, then use it for SSH.
 
 ## 7. Confirm simulated host artifacts inside SSH shell
 

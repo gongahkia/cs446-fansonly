@@ -5,7 +5,7 @@ This repository contains the FansOnly training VM for the classroom scenario. Th
 ## What is implemented
 
 - A Next.js storefront with the exact legacy-version banner, `/new-site`, `/backup`, `/admin`, and `robots.txt` hints.
-- A public export route at `/internal/exports/users.csv`.
+- A public export route at `/internal/exports/users.csv` that leaks a crackable MD5 hash for the `devops` credential.
 - A public Server Action flow at `/legacy-preview` that accepts raw command payloads while keeping browser-interactive shell access disabled.
 - A webhook tester with the required documentation text and a loopback token service simulation for analyst onboarding.
 - An internal admin API bound to `127.0.0.1:4000` for the analyst-to-admin training path.

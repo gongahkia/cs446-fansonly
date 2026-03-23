@@ -44,12 +44,13 @@ There are three primary ways into the system.
 
 ### Path A: The Leaky Export (IDOR)
 1. Navigate to `http://<vm_ip>/internal/exports/users.csv`.
-2. **Result**: You download a CSV containing credentials:
+2. **Result**: You download a CSV containing a crackable password hash:
     - **Username**: `devops`
-    - **Password**: `123456`
-3. **Exploit**: Use these to SSH into the box: `ssh devops@<vm_ip>`.
-4. **Important**: this opens the FansOnly restricted training shell, not a normal Linux shell.
-5. Useful starter commands inside the shell:
+    - **MD5 hash**: `e10adc3949ba59abbe56e057f20f883e`
+3. **Exploit**: Crack the MD5 hash offline with `john` or `hashcat` using `rockyou.txt` to recover the SSH password `123456`.
+4. Use the recovered password to SSH into the box: `ssh devops@<vm_ip>`.
+5. **Important**: this opens the FansOnly restricted training shell, not a normal Linux shell.
+6. Useful starter commands inside the shell:
    ```bash
    whoami
    pwd
