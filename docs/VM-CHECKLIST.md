@@ -119,6 +119,16 @@ Expected:
 curl http://127.0.0.1/robots.txt
 ```
 
+## 10. Remove the original source checkout if you want no extra hints on disk
+
+The deployed app tree at `/var/www/fan-store` is intended to be runtime-only. `install.sh` excludes `docs/`, git metadata, the local Playwright folder, and the installer itself from that deployed copy.
+
+If you copied the repo onto the VM only to run the installer, remove that original source checkout after the checks above pass so it does not leave extra docs or repo history on disk. Example:
+
+```bash
+rm -rf /home/<vm_user>/cs446-fansonly
+```
+
 ## Optional Full Smoke Test
 
 In a browser:

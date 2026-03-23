@@ -72,7 +72,16 @@ log "Stopping existing FansOnly services if present"
 systemctl stop fansonly-app.service fansonly-admin-api.service fansonly-token.service 2>/dev/null || true
 
 mkdir -p "${APP_ROOT}" "${DATA_ROOT}"
-rsync -a --delete --exclude node_modules --exclude .next --exclude var "${SCRIPT_DIR}/" "${APP_ROOT}/"
+rsync -a --delete --delete-excluded \
+  --exclude .git \
+  --exclude .gitignore \
+  --exclude .playwright-cli \
+  --exclude docs \
+  --exclude install.sh \
+  --exclude node_modules \
+  --exclude .next \
+  --exclude var \
+  "${SCRIPT_DIR}/" "${APP_ROOT}/"
 
 id -u devops >/dev/null 2>&1 || useradd -m -s /bin/bash devops
 echo "devops:${DEVOPS_PASSWORD}" | chpasswd
@@ -94,7 +103,7 @@ chown -R www-data:www-data "${APP_ROOT}" "${DATA_ROOT}"
 chmod -R 777 "${DATA_ROOT}"
 usermod -aG www-data devops
 chmod +x "${APP_ROOT}/bin/fansonly-shell-cli.mjs"
-chmod 755 "${APP_ROOT}/install.sh" "${APP_ROOT}/reset-state.sh"
+chmod 755 "${APP_ROOT}/reset-state.sh"
 
 log "Installing application dependencies and building app"
 if [[ -f "${APP_ROOT}/package-lock.json" ]]; then
