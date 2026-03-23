@@ -15,6 +15,8 @@ export async function POST(request) {
       return new Response(JSON.stringify({
         adminToken: env.adminToken,
         analystSignup: "/account/analyst-signup",
+        trainingFlag: "flag{initial-access-path-b-ssrf}",
+        nextHint: "Redeem this token at /account/analyst-signup, then use the session token from /account against the internal admin API on 127.0.0.1:4000.",
         note: "Training fallback response."
       }, null, 2), {
         headers: { "Content-Type": "application/json; charset=utf-8" }

@@ -30,7 +30,7 @@ function runSeed() {
     path.join(env.exportsDir, "users.csv"),
     [
       "name,system_username,password_md5,role,notes",
-      `Leo Marsh,devops,${devopsPasswordMd5},linux-admin,"legacy wholesale deployment user"`
+      `Leo Marsh,devops,${devopsPasswordMd5},linux-admin,"legacy wholesale deployment user | flag{initial-access-path-a-idor} | next: crack the hash and SSH as devops"`
     ].join("\n")
   );
 

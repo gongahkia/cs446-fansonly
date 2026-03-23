@@ -9,6 +9,7 @@ const rl = readline.createInterface({ input, output });
 
 output.write("FansOnly restricted access shell\n");
 output.write("This is a training environment shell and does not expose the host OS.\n");
+output.write("Training breadcrumbs are available in /home/devops/flag-horizontal-1.txt, note-1.txt, and note-2.txt.\n");
 
 let state = await runShellCommand(session, "");
 

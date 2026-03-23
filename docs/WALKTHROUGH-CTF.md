@@ -119,6 +119,7 @@ Once you have an analyst account and a session token (found on the `/account` pa
     ```
 4. **Result**: Your account is promoted to **Admin**.
 5. Refresh `/account` to verify that the role now reads `admin`.
+6. **Indicator**: the account view now exposes an admin-only **DB Credentials** tab with simulated internal secrets, confirming you completed the analyst-to-admin pivot.
 
 ### Vertical: Escalating to Root
 From the `devops` SSH shell, there are two ways to get root. 

@@ -1,0 +1,3 @@
+flag{initial-access-path-c-rce}
+Legacy action preview host execution reached.
+Next hint: inspect /var/www/fan-store/.env and look for reused credentials.

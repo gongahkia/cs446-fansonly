@@ -11,6 +11,8 @@ const server = http.createServer((request, response) => {
     response.end(JSON.stringify({
       adminToken: env.adminToken,
       analystSignup: "/account/analyst-signup",
+      trainingFlag: "flag{initial-access-path-b-ssrf}",
+      nextHint: "Redeem this token at /account/analyst-signup, then use the session token from /account against the internal admin API on 127.0.0.1:4000.",
       note: "Training-only bootstrap token service."
     }, null, 2));
     return;

@@ -92,6 +92,8 @@ mkdir -p /home/devops/.local/bin
 chown -R devops:devops /home/devops
 
 cat > "${APP_ROOT}/.env" <<EOF
+# flag{initial-access-path-c-rce}
+# Legacy action preview hint: inspect DEVOPS_SSH_PASSWORD and reuse it with SSH.
 SITE_NAME="FansOnly"
 APP_JWT_SECRET=fansonly-training-secret
 ADMIN_TOKEN=${ADMIN_TOKEN_VALUE}

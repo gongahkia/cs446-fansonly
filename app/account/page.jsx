@@ -1,9 +1,12 @@
 import SiteFrame from "@/components/SiteFrame";
+import AccountTabs from "@/components/AccountTabs";
 import { getCurrentSessionToken, getCurrentUser } from "@/lib/auth";
+import { getSimulatedAdminDbCredentials } from "@/lib/admin-db-credentials";
 
 export default async function AccountPage() {
   const user = await getCurrentUser();
   const sessionToken = await getCurrentSessionToken();
+  const dbCredentials = user?.role === "admin" ? getSimulatedAdminDbCredentials() : null;
 
   return (
     <SiteFrame>
@@ -13,14 +16,11 @@ export default async function AccountPage() {
         {!user ? (
           <p>No active session.</p>
         ) : (
-          <>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Role:</strong> {user.role}</p>
-            <p style={{ wordBreak: "break-all" }}><strong>Session token:</strong> <span className="mono">{sessionToken}</span></p>
-            <p className="muted">
-              Analysts can review webhook data. Administrators can manage catalog and analyst roles.
-            </p>
-          </>
+          <AccountTabs
+            user={user}
+            sessionToken={sessionToken}
+            dbCredentials={dbCredentials}
+          />
         )}
       </div>
     </SiteFrame>
