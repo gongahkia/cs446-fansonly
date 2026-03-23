@@ -89,7 +89,25 @@ There are three primary ways into the system.
 
 ## 📈 Phase 3: Lateral Movement & Escalation
 
-### Horizontal: Analyst to Admin
+### Horizontal Escalation 1: `www-data` to `devops`
+This path begins after Path C gives you a host-side shell as `www-data`.
+1. From the reverse shell, inspect the application environment file:
+   ```bash
+   cat /var/www/fan-store/.env
+   ```
+2. **Result**: The file reveals a reused SSH credential:
+   - `DEVOPS_SSH_PASSWORD=123456`
+3. **Exploit**: Reuse that password to SSH into the target as `devops` from your Kali machine:
+   ```bash
+   ssh devops@<vm_ip>
+   ```
+4. Enter the leaked password:
+   ```text
+   123456
+   ```
+5. **Result**: You pivot from the compromised web user to the `devops` account and land in the FansOnly restricted training shell.
+
+### Horizontal Escalation 2: Analyst to Admin
 Once you have an analyst account and a session token (found on the `/account` page):
 1. On a freshly reset VM, the new analyst account is user ID `2`.
 2. Use a host-level context (like the `devops` SSH shell) to hit the internal Admin API.
