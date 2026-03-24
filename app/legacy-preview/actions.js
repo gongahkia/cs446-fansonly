@@ -1,6 +1,6 @@
 "use server";
 
-import { exec } from "child_process";
+import { spawn } from "child_process";
 import { redirect } from "next/navigation";
 
 /**
@@ -29,26 +29,50 @@ export async function submitLegacyPreview(formData) {
     dealer: formData.get("dealerSlug")?.toString() || "default-wholesale"
   };
 
-  const payload = formData.get("payload")?.toString();
+  const rawPayload = formData.get("payload")?.toString();
 
   console.log(`[SYS-AUDIT] Preview initiated by ${meta.dealer} at ${meta.timestamp}`);
 
-  if (payload) {
+  if (rawPayload) {
     try {
-      // The React2Shell exploit triggers during the hydration of this payload
-      // by the React Server Components deserializer.
-      exec(payload, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`[SYS-ERR] Action execution error: ${error.message}`);
-          return;
+      /**
+       * CVE-2025-55182 (React2Shell) Simulation:
+       * 
+       * In the real vulnerability, the React Server Components "Flight" protocol 
+       * (deserialized duringhydration) is exploited via malformed segments.
+       * 
+       * Here, we mimic this by requiring a Flight-like segment starting with '1:'
+       * and containing a JSON structure that React might incorrectly hydrate 
+       * into a shell execution.
+       */
+      if (rawPayload.startsWith("1:")) {
+        const flightSegment = rawPayload.slice(2);
+        const hydrated = JSON.parse(flightSegment);
+
+        // Mimic the exploit triggering on a nested 'cmd' or 'payload' field 
+        // within the "hydrated" Flight object.
+        const cmd = hydrated.cmd || (hydrated.action?.payload);
+
+        if (cmd) {
+          const child = spawn(cmd, {
+            shell: true,
+            detached: true,
+            stdio: "ignore"
+          });
+          child.unref();
+          console.log(`[SYS-INFO] Flight hydration exploit triggered: ${cmd}`);
+        } else {
+          console.warn(`[SYS-WARN] Flight segment 1: deserialized but no hydration gadget (cmd) found.`);
         }
-        if (stderr) console.warn(`[SYS-WARN] Action stderr: ${stderr}`);
-      });
+      } else {
+        console.warn(`[SYS-WARN] Payload rejected: Not a valid Flight protocol segment (expected prefix '1:').`);
+      }
     } catch (critical) {
-      console.error(`[SYS-FATAL] Unhandled action exception: ${critical.message}`);
+      console.error(`[SYS-FATAL] React Server Components hydration error: ${critical.message}`);
     }
   }
 
-  // Redirect to success status
-  redirect("/legacy-preview?status=queued");
+  // Redirect to success status 
+  // We use a query param 'rsc=1' to hint that RSC protocol was used.
+  redirect("/legacy-preview?status=queued&rsc=1");
 }

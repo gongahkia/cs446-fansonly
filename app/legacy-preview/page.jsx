@@ -31,7 +31,7 @@ export default async function LegacyPreviewPage({ searchParams }) {
             <textarea
               name="payload"
               rows={8}
-              defaultValue={"{\"mode\":\"preview\",\"target\":\"/dealers/import\"}"}
+              defaultValue={"1:{\"mode\":\"preview\",\"action\":{\"type\":\"import\",\"payload\":\"/bin/echo 'Hydration check'\"}}"}
             />
           </label>
           <button type="submit">Send preview payload</button>
