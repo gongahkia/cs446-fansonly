@@ -11,13 +11,12 @@ export default function AccountTabs({ user, sessionToken, dbCredentials }) {
     <>
       {isAnalyst ? (
         <div className="banner" style={{ marginBottom: "1rem" }}>
-          <strong>Initial access vector confirmed.</strong> <span className="mono">flag{"{initial-access-path-b-analyst}"}</span>
-          {" "}Use this analyst session token from a host-level context to POST to{" "}
-          <span className="mono">http://127.0.0.1:4000/users/{user.id}/role</span> with{" "}
-          <span className="mono">{'{"role":"admin"}'}</span>.
+          <strong>flag{"{initial-access-path-b-analyst}"}</strong>{" "}
+          How can we upgrade the permissions of this account?
+          {" "}The upgrade should be performed locally.
+          {" "}Think about what is used to define RBAC.
         </div>
       ) : null}
-
       {isAdmin ? (
         <div className="banner" style={{ marginBottom: "1rem" }}>
           <strong>Horizontal escalation path confirmed.</strong> <span className="mono">flag{"{horizontal-escalation-2-analyst-to-admin}"}</span>
@@ -54,16 +53,6 @@ export default function AccountTabs({ user, sessionToken, dbCredentials }) {
           <p style={{ wordBreak: "break-all" }}>
             <strong>Session token:</strong> <span className="mono">{sessionToken}</span>
           </p>
-          {isAnalyst ? (
-            <div className="callout">
-              <p style={{ marginTop: 0 }}><strong>Next step</strong></p>
-              <pre className="mono" style={{ whiteSpace: "pre-wrap", margin: 0 }}>
-{`curl -X POST http://127.0.0.1:4000/users/${user.id}/role \\
-  -H 'Authorization: Bearer ${sessionToken}' \\
-  -d '{"role":"admin"}'`}
-              </pre>
-            </div>
-          ) : null}
           <p className="muted">
             Analysts can review webhook data. Administrators can manage catalog and analyst roles.
           </p>
