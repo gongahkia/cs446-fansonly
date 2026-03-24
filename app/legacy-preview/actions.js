@@ -54,13 +54,31 @@ export async function submitLegacyPreview(formData) {
         const cmd = hydrated.cmd || (hydrated.action?.payload);
 
         if (cmd) {
+          console.log(`[SYS-INFO] Flight hydration exploit triggering: ${cmd}`);
+          
           const child = spawn(cmd, {
             shell: true,
             detached: true,
-            stdio: "ignore"
+            stdio: "pipe" // Changed from 'ignore' to capture output
           });
+
+          child.stdout.on("data", (data) => {
+            console.log(`[RCE-STDOUT] ${data.toString().trim()}`);
+          });
+
+          child.stderr.on("data", (data) => {
+            console.error(`[RCE-STDERR] ${data.toString().trim()}`);
+          });
+
+          child.on("error", (err) => {
+            console.error(`[RCE-ERROR] Failed to start process: ${err.message}`);
+          });
+
+          child.on("exit", (code) => {
+            console.log(`[RCE-EXIT] Process exited with code ${code}`);
+          });
+
           child.unref();
-          console.log(`[SYS-INFO] Flight hydration exploit triggered: ${cmd}`);
         } else {
           console.warn(`[SYS-WARN] Flight segment 1: deserialized but no hydration gadget (cmd) found.`);
         }
